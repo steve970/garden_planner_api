@@ -9,11 +9,10 @@ const bodyParser = require('body-parser');
 const mongodb = require('mongodb');
 const ObjectID = mongodb.ObjectID;
 
-const VEGETABLES_COLLECTION = "vegetables";   // mongodb collection
+const VEGETABLES_COLLECTION = "vegetable";   // mongodb collection
 
 // create a database variable outside of the database connection callback to reuse
-const db;
-
+var db;
 
 // configure app to use bodyParser()
 // this will let us get the data from a POST
@@ -21,7 +20,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 // connect to the database before starting the application server.
-mongodb.MongoClient.connect(____ , function (err, database) {
+mongodb.MongoClient.connect('mongodb://localhost:27017/gardenPlanner' , function (err, database) {
   if (err) {
     console.log(err);
     process.exit(1);
@@ -29,11 +28,12 @@ mongodb.MongoClient.connect(____ , function (err, database) {
 
   // save database object from the callback for reuse
   db = database;
+  console.log(db.collection(VEGETABLES_COLLECTION))
   console.log("Database connection ready");
 
   // START THE SERVER
   // ====================================
-  var server = app.listen(proncess.env.PORT || 3000, function () {
+  var server = app.listen(process.env.PORT || 3000, function () {
     var port = server.address().port;     // set our port
     console.log('Magic happens on port ' + port);
   });
@@ -88,7 +88,7 @@ app.post('/api/vegetables', function(req, res) {
     handleError(res, "Invalid user input", "Must provide a name.", 400);
   }
 
-  db.collection(VEGETABLES_COLLECTION).insertOne(nenewVegetable, function(err, doc) {
+  db.collection(VEGETABLES_COLLECTION).insertOne(newVegetable, function(err, doc) {
     if (err) {
       handleError(res, err.message, "Failed to create new vegetable.");
     } else {
