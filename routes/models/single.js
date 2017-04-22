@@ -7,5 +7,4 @@ module.exports = (req, res) =>  {
   const model = data.models.find(m => m.id === modelId);
 
   res.status(200).json({ model });
-
 };
