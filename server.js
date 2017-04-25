@@ -6,6 +6,11 @@ const express = require('express');       // call express
 const app = express();                    // define our app using express
 const bodyParser = require('body-parser');
 
+// authentication
+const cors = require('cors');
+const jwt = require('express-jwt');
+const jwks = require('jwks-rsa');
+
 const mongodb = require('mongodb');
 const ObjectID = mongodb.ObjectID;
 
@@ -16,8 +21,21 @@ var db;
 
 // configure app to use bodyParser()
 // this will let us get the data from a POST
+// configure app to user cors
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
+app.use(cors());
+
+// authentication check
+const authCheck = jwt({
+  secret: jwks.expressJwtSecret({
+    cache: true,
+    ratelimit: true,
+    jwksRequestsPerMinute: 5,
+    // YOUR-AUTH0-DOMAIN name e.g. prosper.auth0.com
+    jwksUri: ""
+  })
+})
 
 // connect to the database before starting the application server.
 mongodb.MongoClient.connect('mongodb://localhost:27017/gardenPlanner' , function (err, database) {
